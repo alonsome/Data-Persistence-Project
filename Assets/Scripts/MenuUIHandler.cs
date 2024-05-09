@@ -13,17 +13,23 @@ using UnityEngine.UI;
 public class MenuUIHandler : MonoBehaviour
 {
     public NameReader NameReader;
+    public TextMeshProUGUI bestScore;
     // Start is called before the first frame update
     void Start()
     {
-        NameReader = new NameReader();
-        NameReader.SubmitName(MainManager.Instance.PlayerName);
+        NameReader = FindObjectOfType<NameReader>();
+        BestPlayer();
         //playerInput.onEndEdit += 
         //NameReader.SubmitName += PlayerNameInput;
     }
-    public void PlayerNameInput(string name)
+    public void BestPlayer()
     {
-
+        if (MainManager.Instance.PlayerName != "")
+        {
+            bestScore.text = "Best Score : "+MainManager.Instance.PlayerName+
+                " : "+MainManager.Instance.HighScore;
+        }
+       
     }
     public void StartNew()
     {

@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text bestScore;
+    public TextMeshProUGUI playerName;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -23,9 +25,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LoadHighestScore();
         if (MainManager.Instance != null)
         {
-            SetName(MainManager.Instance.PlayerName);
+            SetName(MainManager.Instance.CurrentPlayer);
         }
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -68,10 +71,40 @@ public class GameManager : MonoBehaviour
     }
     void SetName(string name)
     {
-        var playerName = GetComponent<TextMeshProUGUI>();
+        //var playerName = GetComponent<TextMeshProUGUI>();
         if (playerName != null)
         {
             playerName.text = name;
+        }
+    }
+    public void LoadHighestScore()
+    {
+        MainManager.Instance.LoadHighScore();
+        if(MainManager.Instance.PlayerName != "")
+        {
+            bestScore.text = "Best Score : "+MainManager.Instance.PlayerName +
+                " : "+MainManager.Instance.HighScore;
+        }
+    }
+
+    public void SaveNewBest()
+    {
+        if (MainManager.Instance.PlayerName != null)
+        {
+            //If there is a previous record then check if the points are higher
+            if (m_Points > MainManager.Instance.HighScore)
+            {
+                MainManager.Instance.PlayerName = MainManager.Instance.CurrentPlayer;
+                MainManager.Instance.HighScore = m_Points;
+                MainManager.Instance.SaveHighScore();
+            }
+        }
+        else
+        {
+            //Save the points if there is no previous record
+            MainManager.Instance.PlayerName = MainManager.Instance.CurrentPlayer;
+            MainManager.Instance.HighScore = m_Points;
+            MainManager.Instance.SaveHighScore();
         }
     }
 
@@ -83,7 +116,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        SaveNewBest();
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
+
 }

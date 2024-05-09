@@ -10,11 +10,11 @@ public class NameReader : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerInput.onEndEdit.AddListener(SubmitName);
+        playerInput.onValueChanged.AddListener(SubmitName);
     }
 
     public void SubmitName(string inputText)
     {
-        Debug.Log("Player Name : "+inputText);
+        MainManager.Instance.CurrentPlayer = inputText;
     }
 }
